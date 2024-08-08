@@ -1,0 +1,96 @@
+Sure! We can use the given data to perform some basic analysis and predictions for the Paris Olympics 2024. Here’s how we can proceed:
+
+1. **Create a DataFrame** from the provided data.
+2. **Preprocess the Data** to calculate additional features.
+3. **Apply a Machine Learning Model** to predict outcomes.
+
+Let's write the code to perform these steps.
+
+### Step 1: Create a DataFrame
+
+```python
+import pandas as pd
+
+# Create a DataFrame from the given data
+data = {
+    'Country': ['China', 'France', 'Japan', 'Australia', 'Great Britain', 'South Korea', 'United States', 'Italy', 'Canada', 'Germany'],
+    'Gold': [9, 8, 8, 7, 6, 6, 5, 3, 2, 2],
+    'Silver': [7, 10, 3, 6, 6, 3, 13, 6, 2, 2],
+    'Bronze': [3, 8, 4, 3, 5, 3, 12, 4, 3, 2],
+    'Total': [19, 26, 15, 16, 17, 12, 30, 13, 7, 6]
+}
+
+df = pd.DataFrame(data)
+
+# Display the DataFrame
+print(df)
+```
+
+### Step 2: Preprocess the Data
+
+We'll add features such as the ratio of gold, silver, and bronze medals to the total number of medals.
+
+```python
+# Calculate the ratio of gold, silver, and bronze medals to the total number of medals
+df['Gold_Ratio'] = df['Gold'] / df['Total']
+df['Silver_Ratio'] = df['Silver'] / df['Total']
+df['Bronze_Ratio'] = df['Bronze'] / df['Total']
+
+# Display the DataFrame with the new features
+print(df)
+```
+
+### Step 3: Apply a Machine Learning Model
+
+We'll use a linear regression model to predict the total number of medals based on the gold, silver, and bronze medals.
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Select features and target variable
+features = ['Gold', 'Silver', 'Bronze', 'Gold_Ratio', 'Silver_Ratio', 'Bronze_Ratio']
+target = 'Total'
+
+# Split the data into training and testing sets
+X = df[features]
+y = df[target]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse}')
+
+# Display the predictions
+predictions = pd.DataFrame({'Country': df.loc[X_test.index, 'Country'], 'Actual': y_test, 'Predicted': y_pred})
+print(predictions)
+```
+
+### Step 4: Analysis and Visualization
+
+Let's plot the actual vs predicted total medals for a better visualization.
+
+```python
+import matplotlib.pyplot as plt
+
+# Plot actual vs predicted total medals
+plt.figure(figsize=(10, 6))
+plt.scatter(predictions['Country'], predictions['Actual'], color='blue', label='Actual')
+plt.scatter(predictions['Country'], predictions['Predicted'], color='red', label='Predicted')
+plt.xlabel('Country')
+plt.ylabel('Total Medals')
+plt.title('Actual vs Predicted Total Medals (Paris Olympics 2024)')
+plt.xticks(rotation=45)
+plt.legend()
+plt.show()
+```
+
+You can run the above code in your local Python environment. This script will provide an analysis and prediction of the total medals based on the given data for the Paris Olympics 2024. You can further enhance the model by adding more features or trying different machine learning algorithms.
